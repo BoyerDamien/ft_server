@@ -1,0 +1,31 @@
+server {
+	listen 80;
+	listen [::]:80;
+	root /var/www/ft_server;
+	server_name localhost www.localhost localhost.com;
+	return 301 https://localhost:443;
+}
+
+server {
+	listen 443 ssl ;
+	listen [::]:443 ssl ;
+
+	ssl on;
+	ssl_certificate /etc/ssl/certs/localhost.crt;
+	ssl_certificate_key /etc/ssl/private/localhost.key;
+	
+	server_name localhost www.localhost localhost.com;
+
+	index index.html index.htm index.nginx-debian.html index.php;
+	
+	root /var/www/ft_server;
+	
+	location = / {
+		return 301 https://localhost:443/wordpress;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+	}
+}
